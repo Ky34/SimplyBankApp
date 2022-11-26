@@ -238,7 +238,6 @@ btnLoan.addEventListener('click', function (e) {
 });
 
 // SORTING IMPLEMENTATION (ИМПЛЕМЕНТАЦИЯ СОРТИРОВКИ)
-
 let transactionsSorted = false;
 
 btnSort.addEventListener('click', function (e) {
