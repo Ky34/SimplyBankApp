@@ -5,7 +5,7 @@
 // Users
 const account1 = {
   userName: 'Cecil Ireland',
-  transactions: [500, 250, -300, 5000, -850, -110, -170, 1100],
+  transactions: [500, 250.99, -300, 5000.11, -850.87, -110, -170.34, 1100],
   interest: 1.5,
   pin: 1111,
 };
@@ -109,7 +109,7 @@ const displayTransactions = function (transactions, sort = false) {
       <div class="transactions__type transactions__type--${transType}">
         ${index + 1} ${transType}
       </div>
-      <div class="transactions__value">${trans}</div>
+      <div class="transactions__value">${trans.toFixed(2)}$</div>
     </div>`;
     containerTransactions.insertAdjacentHTML('afterbegin', transactionRow);
   });
@@ -119,7 +119,7 @@ const displayTransactions = function (transactions, sort = false) {
 const displayBalance = function (account) {
   const balance = account.transactions.reduce((acc, trans) => acc + trans, 0);
   account.balance = balance;
-  labelBalance.textContent = `${balance}$`;
+  labelBalance.textContent = `${balance.toFixed(2)}$`;
 };
 
 // FUNCTION TO DISPLAY THE SUM OF ALL DEPOSITS, WITHDRAWALS AND PERCENTAGE
@@ -128,12 +128,12 @@ const displayTotal = function (account) {
   const depositTotal = account.transactions
     .filter(trans => trans > 0)
     .reduce((acc, trans) => acc + trans, 0);
-  labelSumIn.textContent = `${depositTotal}$`;
+  labelSumIn.textContent = `${depositTotal.toFixed(2)}$`;
 
   const withdrawalTotal = account.transactions
     .filter(trans => trans < 0)
     .reduce((acc, trans) => acc + trans, 0);
-  labelSumOut.textContent = `${withdrawalTotal}$`;
+  labelSumOut.textContent = `${withdrawalTotal.toFixed(2)}$`;
 
   const interestTotal = account.transactions
     .filter(trans => trans > 0)
@@ -166,7 +166,7 @@ btnLogin.addEventListener('click', function (e) {
     account => account.nickname === inputLoginUsername.value
   );
   console.log(currentAccount);
-  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+  if (currentAccount?.pin === +inputLoginPin.value) {
     containerApp.style.opacity = 100;
     labelWelcome.textContent = `Рады что вы снова с нами, ${
       currentAccount.userName.split(' ')[0]
@@ -183,7 +183,7 @@ btnLogin.addEventListener('click', function (e) {
 // IMPLEMENTATION OF MONEY TRANSFER (ИМПЛЕМЕНТАЦИЯ ПЕРЕВОДА ДЕНЕЖНЫХ СРЕДСТВ)
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
-  const transferAmount = Number(inputTransferAmount.value);
+  const transferAmount = +inputTransferAmount.value;
   const recipientUser = inputTransferTo.value;
   const recipientAccount = accounts.find(
     account => account.nickname === recipientUser
@@ -207,7 +207,7 @@ btnClose.addEventListener('click', function (e) {
   e.preventDefault();
   if (
     currentAccount.nickname === inputCloseUsername.value &&
-    currentAccount.pin === Number(inputClosePin.value)
+    currentAccount.pin === +inputClosePin.value
   ) {
     const currentAccountIndex = accounts.findIndex(
       account => account.nickname === currentAccount.nickname
@@ -226,7 +226,7 @@ btnClose.addEventListener('click', function (e) {
 // (условие займа:  хотя бы 1 из депозитов должен быть больше 10% от запрашиваемой суммы)
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
-  const loanAmount = Number(inputLoanAmount.value); // получаем значение из инпута
+  const loanAmount = Math.floor(inputLoanAmount.value); // получаем значение из инпута
   if (
     loanAmount > 0 &&
     currentAccount.transactions.some(trans => trans >= (loanAmount * 10) / 100)
